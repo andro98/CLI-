@@ -2,6 +2,8 @@ package Maini;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Parser {
 
@@ -10,13 +12,36 @@ public class Parser {
     int size;
     Terminal t;
 
-    public boolean parse(String input) {
+    public Parser() {
         t = new Terminal();
+    }
+
+    public boolean parse(String input) {
+
         if (cutInput(input)) {
             switch (cmd) {
                 case "cp":
+                    if (size != 2) {
+                        System.out.println("Wrong number of args");
+                    } else {
+                        try {
+                            t.cp(args[0], args[1]);
+                        } catch (IOException ex) {
+                            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     break;
                 case "mv":
+                    if (size != 2) {
+                        System.out.println("Wrong number of args");
+                    } else {
+                        try {
+                            t.mv(args[0], args[1]);
+                        } catch (IOException ex) {
+                            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
                     break;
                 case "rm":
                     if (size != 1) {
@@ -40,8 +65,18 @@ public class Parser {
                     }
                     break;
                 case "ls":
+                    if (size != 0) {
+                        System.out.println("Wrong number of args");
+                    } else {
+                        t.ls();
+                    }
                     break;
                 case "cd":
+                    if (size != 1) {
+                        System.out.println("Wrong number of args");
+                    } else {
+                        t.cd(args[0]);
+                    }
                     break;
                 case "mkdir":
                     if (size != 1) {
@@ -146,7 +181,10 @@ public class Parser {
         size = 0;
         int ind = Input.indexOf(" ");
         if (ind == -1) {
-            if (Input.equals("pwd") || Input.equals("more") || Input.equals("clear") || Input.equals("args") || Input.equals("exit") || Input.equals("help")) {
+            if (Input.equals("pwd") || Input.equals("more")
+                    || Input.equals("clear") || Input.equals("args")
+                    || Input.equals("exit") || Input.equals("help")
+                    || Input.equals("ls")) {
                 return -2;
             }
         }

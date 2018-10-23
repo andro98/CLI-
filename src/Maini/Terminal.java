@@ -18,6 +18,91 @@ public class Terminal {
     public Terminal() {
         set_help();
     }
+    String d = "C:\\";
+
+    File dir = new File(d);
+
+    public  void cp(String f1, String f2) throws IOException {
+        // Files.copy(Paths.get(f1),Paths.get(f2));
+        File src = new File(f1);
+        File des = new File(f2);
+        if (src.exists()) {
+            if (src.isFile()) {
+                if (des.exists()) {
+                    if (des.isFile()) {
+                        Files.copy(Paths.get(f1), new FileOutputStream(f2));
+                    } else if (des.isDirectory()) {
+                        String name = "";
+                        for (int i = f1.length() - 1; i >= 0; i--) {
+                            if (f1.charAt(i) == '\\') {
+                                name = f1.substring(i);
+                                break;
+                            }
+                        }
+                        f2 += name;
+                        Files.copy(Paths.get(f1), new FileOutputStream(f2));
+                    }
+
+                } else {
+
+                    String name = "";
+
+                    for (int i = f2.length() - 1; i >= 0; i--) {
+
+                        if (f2.charAt(i) == '\\') {
+                            name = f2.substring(0, i - 1);
+                            break;
+                        }
+                    }
+                    File check = new File(name);
+
+                    if (check.exists()) {
+
+                        Files.copy(Paths.get(f1), new FileOutputStream(f2));
+                    } else {
+                        System.out.println("cp: cannot create regular file `" + f2 + "': No such file or directory");
+                    }
+
+                }
+            } else {
+                System.out.println("cp: omitting directory `" + f1 + "'");
+            }
+        } else {
+            System.out.println("cp: cannot stat `" + f1 + "': No such file or directory");
+        }
+    }
+
+    public void cd(String dest) {
+        boolean exist = false;
+        if (dest.indexOf(":") != -1) {
+            dir = new File(dest);
+        } else {
+            dir = new File(d + "\\" + dest);
+            exist = true;
+        }
+        if (dir.exists()) {
+            if (exist) {
+                d += dest;
+            } else {
+                d = dest;
+            }
+        } else {
+            System.out.println("bash: cd: " + dest + ":/ No such file or directory");
+        }
+    }
+
+    public void ls() {
+
+        File listOfFiles[] = dir.listFiles();
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                System.out.println("File " + listOfFiles[i].getName());
+            } else if (listOfFiles[i].isDirectory()) {
+                System.out.println("Directory " + listOfFiles[i].getName());
+            }
+        }
+
+    }
 
     public void mkdir(String NewFolderName)// b t create new folder
     {
@@ -99,21 +184,7 @@ public class Terminal {
 
     public void pwd() //show the user's current directory
     {
-        String pwd = System.getProperty("user.dir");
-        System.out.println(pwd);
-    }
-
-    public void clear() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
-    public void cd(String Input) {
-
-    }
-
-    public void mv(String src, String dst) {
-        // Files.move(new Path(src), new Path(dst),StandardCopyOption.COPY_ATTRIBUTES );
+        System.out.println(d);
     }
 
     public void args() {
@@ -132,14 +203,13 @@ public class Terminal {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         Date date = new Date();
         System.out.println(dateFormat.format(date));
-      
+
     }
-    
-    public boolean exit()
-    {
+
+    public boolean exit() {
         return false;
     }
-    
+
     private static void set_help() {
         cmd[0] = "clear";
         cmd[1] = "cd";
@@ -190,4 +260,26 @@ public class Terminal {
         arr[14] = "it takes no arguments.";
     }
 
+    public void clear() {
+
+        for (int i = 0; i < 100; i++) {
+
+            System.out.println();
+        }
+    }
+
+    public void mv(String f1, String f2) throws IOException {
+
+        cp(f1, f2);
+
+        File f = new File(f1);
+
+        if (f.exists()) {
+
+            if (f.isFile()) {
+
+                f.delete();
+            }
+        }
+    }
 }
