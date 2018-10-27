@@ -22,7 +22,11 @@ public class Terminal {
 
     File dir = new File(d);
 
-    public  void cp(String f1, String f2) throws IOException {
+    public void cp(String f1, String f2) throws IOException {
+        int ind = f1.indexOf(":");
+        if(ind == -1){
+            f1 = (d + f1);
+        }
         // Files.copy(Paths.get(f1),Paths.get(f2));
         File src = new File(f1);
         File des = new File(f2);
@@ -74,15 +78,29 @@ public class Terminal {
 
     public void cd(String dest) {
         boolean exist = false;
-        if (dest.indexOf(":") != -1) {
+        if (dest.equals("..")) {
+            int j = d.indexOf("\\");
+            int i = d.lastIndexOf("\\");
+            if (i != j) {
+
+                dest = d.substring(0, i);
+                dir = new File(dest);
+            }
+            else{
+                dest = d;
+            }
+        } else if (dest.indexOf(
+                ":") != -1) {
             dir = new File(dest);
         } else {
             dir = new File(d + "\\" + dest);
             exist = true;
+            System.out.println("hi");
         }
+
         if (dir.exists()) {
             if (exist) {
-                d += dest;
+                d += "\\" + dest;
             } else {
                 d = dest;
             }
@@ -106,17 +124,27 @@ public class Terminal {
 
     public void mkdir(String NewFolderName)// b t create new folder
     {
+        int ind=NewFolderName.indexOf(":");      
+        if(ind==-1)
+        {
+            NewFolderName=d+NewFolderName;
+        }
         File dir = new File(NewFolderName);
         boolean success = dir.mkdir();
         if (success) {
-            System.out.println("directorie were created successfully");
+            System.out.println("directory were created successfully");
         } else {
-            System.out.println("failed create the directorie");
+            System.out.println("failed create the directory");
         }
     }
 
     public void rmdir(String DeletedFolderName) //batms7 el folders ely gowaha fady mafho4 ay 7aga ya3ni
     {
+         int ind=DeletedFolderName.indexOf(":");      
+        if(ind==-1)
+        {
+           DeletedFolderName=d+DeletedFolderName;
+        }
         File dir = new File(DeletedFolderName);
         boolean success = dir.delete();
         if (success) {
@@ -128,9 +156,14 @@ public class Terminal {
 
     public void cat(String FirstFileName, String SecondFilename)//concatinate two files's content and show the result
     {
-        Scanner scan, scan2;
+            Scanner scan, scan2;
         String text = new String("");
         try {
+            int ind=FirstFileName.indexOf(":");      
+            if(ind==-1)
+            {
+                 FirstFileName=d+FirstFileName;
+            }
             scan = new Scanner(new java.io.File(FirstFileName));
             while (scan.hasNext()) {
                 text += scan.next();
@@ -142,6 +175,11 @@ public class Terminal {
         }
         text += " ";
         try {
+            int ind=SecondFilename.indexOf(":");      
+            if(ind==-1)
+            {
+                 SecondFilename=d+SecondFilename;
+            }
             scan2 = new Scanner(new java.io.File(SecondFilename));
             while (scan2.hasNext()) {
                 text += scan2.next();
@@ -154,26 +192,26 @@ public class Terminal {
     }
 
     public void more() {
-        System.out.print("[cd] ");
-        System.out.println("change the directory");
-        System.out.print("[clear] ");
-        System.out.println("delete the command");
-        System.out.print("[cp] ");
-        System.out.println("copy and paste");
-        System.out.print("[mkdir] ");
-        System.out.println("Make a new folder");
-        System.out.print("[rmdir] ");
-        System.out.println("delete a folder which has no content inside it");
-        System.out.print("[cat] ");
-        System.out.println("concatinate tow folder's content and show the result");
-        System.out.print("[rm] ");
-        System.out.println("delete a file");
-        System.out.print("[pwd] ");
-        System.out.println("show the user's current directory");
+       Scanner scan=new Scanner(System.in);
+        while(true)
+        {
+            String s;
+            s=scan.nextLine();
+            /*if(s.equals("break"))
+            {
+                break;
+            }*/
+            System.out.println(s);
+        }
     }
 
     public void rm(String DeletedFileName) // delete a file
     {
+       int ind=DeletedFileName.indexOf(":");      
+        if(ind==-1)
+        {
+           DeletedFileName=d+DeletedFileName;
+        }
         File file = new File(DeletedFileName);
         if (file.delete()) {
             System.out.println("File deleted successfully");
